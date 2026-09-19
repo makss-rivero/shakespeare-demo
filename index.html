@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f3efe6" />
+    <title>Hamlet · A wordless soliloquy</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="scenes.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <svg class="definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <g id="person">
+          <circle cx="0" cy="-87" r="13" fill="currentColor" />
+          <path d="M-10-67 Q-26-61-23-42 L-29-17 L-14-17 L-15 0 L-5 0 L0-24 L5 0 L15 0 L14-17 L29-17 L23-42 Q26-61 10-67Z" fill="currentColor" />
+          <path d="M-8-66 L0-55 L8-66" fill="var(--paper)" />
+        </g>
+        <g id="ophelia">
+          <circle cy="-87" r="12" fill="currentColor" />
+          <path d="M-10-94 Q-24-84-16-64 M10-94 Q24-84 16-64" class="ink-line" />
+          <path d="M-9-67 Q-17-61-17-48 L-34 0 H34 L17-48 Q17-61 9-67Z" fill="currentColor" />
+          <path d="M-11-51 L0-64 L11-51" fill="none" stroke="var(--paper)" stroke-width="3" />
+        </g>
+        <g id="heart">
+          <path d="M0 30 C-12 17-40 0-33-19 C-27-37-7-34 0-20 C7-34 27-37 33-19 C40 0 12 17 0 30Z" fill="currentColor" />
+        </g>
+        <g id="skull">
+          <path d="M-25 8 C-45-40 45-40 25 8 L17 14 L17 30 H-17 L-17 14Z" fill="currentColor" />
+          <ellipse cx="-12" cy="-4" rx="7" ry="9" fill="var(--paper)" />
+          <ellipse cx="12" cy="-4" rx="7" ry="9" fill="var(--paper)" />
+          <path d="M0 6 L-4 14 H4Z" fill="var(--paper)" />
+          <path d="M-7 21 V30 M0 21 V30 M7 21 V30" stroke="var(--paper)" stroke-width="2" />
+        </g>
+        <g id="moon">
+          <path d="M18-32 A36 36 0 1 0 30 22 A31 31 0 0 1 18-32Z" fill="currentColor" />
+        </g>
+        <g id="sun">
+          <circle r="25" fill="currentColor" />
+          <path d="M0-43 V-35 M0 35 V43 M-43 0 H-35 M35 0 H43 M-30-30 L-25-25 M25 25 L30 30 M-30 30 L-25 25 M25-25 L30-30" stroke="currentColor" stroke-width="2" />
+        </g>
+        <g id="star"><path d="M0-13 Q2-2 13 0 Q2 2 0 13 Q-2 2-13 0 Q-2-2 0-13" fill="currentColor" /></g>
+        <g id="crown">
+          <path d="M-36-22 L-20-6 L0-31 L20-6 L36-22 L28 17 H-28Z" fill="currentColor" />
+          <path d="M-25 9 H25" stroke="var(--paper)" stroke-width="2" />
+        </g>
+        <g id="sword">
+          <path d="M0-115 L8-97 L5-24 H-5 L-8-97Z" fill="currentColor" />
+          <path d="M-20-23 H20 M0-23 V0" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+          <circle r="5" fill="currentColor" />
+        </g>
+        <g id="arrow">
+          <path d="M-58 0 H30 M17-10 L30 0 L17 10 M-55-6 L-45 0 L-55 6" class="ink-line" />
+        </g>
+        <g id="clock">
+          <circle r="37" class="ink-line" />
+          <path d="M0-28 V-23 M28 0 H23 M0 28 V23 M-28 0 H-23" class="fine-line" />
+          <circle r="3" fill="currentColor" />
+        </g>
+        <g id="hourglass">
+          <path d="M-20-30 H20 M-20 30 H20 M-16-30 Q-16-10 0 0 Q16 10 16 30 M16-30 Q16-10 0 0 Q-16 10-16 30" class="ink-line" />
+          <path d="M-10 23 L0 9 L10 23Z M-10-23 H10 L0-9Z" fill="currentColor" />
+        </g>
+        <g id="scales">
+          <path d="M0-50 V45 M-24 45 H24 M-48-33 H48 M-43-33 L-59 3 H-27Z M43-33 L27 3 H59Z" class="ink-line" />
+          <path d="M-60 4 Q-43 29-26 4 M26 4 Q43 29 60 4" fill="currentColor" />
+          <circle cy="-50" r="5" fill="currentColor" />
+        </g>
+        <g id="eye">
+          <path d="M-57 0 Q0-51 57 0 Q0 51-57 0Z" class="ink-line" />
+          <circle r="15" fill="currentColor" />
+          <circle cx="5" cy="-5" r="4" fill="var(--paper)" />
+        </g>
+        <g id="stone"><path d="M-42 19 L-48-11 L-22-36 L19-32 L42-8 L36 25 L-5 35Z" fill="currentColor" /></g>
+        <g id="flower">
+          <path d="M0 0 V78 M0 43 Q-29 16-29 39 Q-24 53 0 55 M0 57 Q27 29 28 49 Q22 61 0 65" class="ink-line" />
+          <g fill="currentColor">
+            <ellipse cy="-16" rx="10" ry="18" />
+            <ellipse cy="-16" rx="10" ry="18" transform="rotate(72)" />
+            <ellipse cy="-16" rx="10" ry="18" transform="rotate(144)" />
+            <ellipse cy="-16" rx="10" ry="18" transform="rotate(216)" />
+            <ellipse cy="-16" rx="10" ry="18" transform="rotate(288)" />
+          </g>
+          <circle r="7" fill="var(--paper)" />
+        </g>
+        <g id="boat">
+          <path d="M-66 12 H62 L42 37 H-36Z" fill="currentColor" />
+          <path d="M-3-89 V12" class="ink-line" />
+          <path d="M-10-81 L-60 3 H-10Z M5-63 L45 3 H5Z" fill="var(--gold)" />
+          <path d="M-3-91 L24-84 L-3-77Z" fill="var(--red)" />
+        </g>
+        <g id="laurel">
+          <path d="M-3 28 Q-41 13-22-28 M3 28 Q41 13 22-28" class="ink-line" />
+          <path d="M-18 15 Q-43 12-34-4 Q-19-4-18 15 M-24-5 Q-43-16-29-28 Q-16-21-24-5 M18 15 Q43 12 34-4 Q19-4 18 15 M24-5 Q43-16 29-28 Q16-21 24-5" fill="currentColor" />
+        </g>
+        <g id="mask">
+          <path d="M-28-27 Q0-37 28-27 V3 Q23 31 0 38 Q-23 31-28 3Z" fill="currentColor" />
+          <path d="M-18-9 L-6-5 M6-5 L18-9 M-12 9 Q0 25 12 9" fill="none" stroke="var(--paper)" stroke-width="3" stroke-linecap="round" />
+        </g>
+        <g id="bed">
+          <path d="M-83 0 H83 M-83-37 V15 M83-13 V15" class="ink-line" />
+          <path d="M-69-15 Q-69-39-41-34 L-31-16Z M-30-15 Q4-49 67-15Z" fill="currentColor" />
+        </g>
+        <g id="portal">
+          <path d="M-65 84 V-65 A65 65 0 0 1 65-65 V84Z" fill="var(--ink)" />
+          <path d="M-76 84 V-65 A76 76 0 0 1 76-65 V84" class="fine-line" />
+          <path d="M-87 85 H87" class="ink-line" />
+        </g>
+        <g id="cloud"><path d="M-69 18 Q-88-8-58-20 Q-57-56-20-47 Q3-77 26-47 Q65-57 64-22 Q99-8 72 18Z" fill="currentColor" /></g>
+      </defs>
+    </svg>
+
+    <main class="folio" aria-label="A wordless interpretation of Hamlet's soliloquy, in thirty-five animated scenes">
+      <header class="topbar">
+        <div class="colophon" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><path d="M12 35 C11 22 19 12 37 9 C34 26 24 33 12 35Z" /><path d="M9 40 L30 19 M17 30 L17 22 M23 24 L30 24" /></svg>
+        </div>
+        <div class="act-mark" aria-hidden="true"><i></i><i></i><i></i></div>
+        <button id="fullscreen" class="icon-button quiet" aria-label="Enter full screen">
+          <svg viewBox="0 0 24 24"><path d="M8 4 H4 V8 M16 4 H20 V8 M20 16 V20 H16 M8 20 H4 V16" /></svg>
+        </button>
+      </header>
+
+      <section class="theatre" aria-label="Animation">
+        <div class="stage-halo" aria-hidden="true"></div>
+        <svg id="stage" viewBox="0 0 900 520" role="img" aria-labelledby="scene-description">
+          <title id="scene-description">To be, or not to be: that is the question.</title>
+          <path class="ground" d="M190 397 H710" />
+          <g id="scene"></g>
+        </svg>
+        <div class="edge-mark edge-mark-left" aria-hidden="true"></div>
+        <div class="edge-mark edge-mark-right" aria-hidden="true"></div>
+      </section>
+
+      <footer class="player">
+        <nav id="timeline" class="timeline" aria-label="Poem lines"></nav>
+        <div class="transport">
+          <button id="restart" class="icon-button quiet" aria-label="Restart the poem">
+            <svg viewBox="0 0 24 24"><path d="M4 10 A8 8 0 1 1 5 17 M4 4 V10 H10" /></svg>
+          </button>
+          <div class="playback-controls">
+            <button id="previous" class="icon-button" aria-label="Previous line">
+              <svg viewBox="0 0 24 24"><path d="M7 5 V19 M18 6 L9 12 L18 18Z" /></svg>
+            </button>
+            <button id="play" class="play-button" aria-label="Pause animation">
+              <svg class="pause-icon" viewBox="0 0 24 24"><path d="M9 6 V18 M15 6 V18" /></svg>
+              <svg class="play-icon" viewBox="0 0 24 24"><path d="M9 5 L19 12 L9 19Z" /></svg>
+            </button>
+            <button id="next" class="icon-button" aria-label="Next line">
+              <svg viewBox="0 0 24 24"><path d="M17 5 V19 M6 6 L15 12 L6 18Z" /></svg>
+            </button>
+          </div>
+          <button id="loop" class="icon-button quiet" aria-label="Loop animation" aria-pressed="false">
+            <svg viewBox="0 0 24 24"><path d="M12 12 C9 6 3 6 3 12 C3 18 9 18 12 12 C15 6 21 6 21 12 C21 18 15 18 12 12Z" /></svg>
+          </button>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>

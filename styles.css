@@ -1,0 +1,411 @@
+:root {
+  color-scheme: light;
+  --paper: #f3efe6;
+  --ink: #292b29;
+  --red: #b85843;
+  --gold: #b39250;
+  --mist: #dfdfd6;
+  --rule: #d8d2c5;
+  --duration: 6400ms;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-width: 280px;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background: #e7e3da;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+button { color: inherit; font: inherit; touch-action: manipulation; }
+button:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+button:disabled { opacity: .22; cursor: default; }
+.definitions { position: absolute; width: 0; height: 0; overflow: hidden; }
+.folio {
+  position: relative;
+  isolation: isolate;
+  width: calc(100% - 64px);
+  max-width: 1400px;
+  height: calc(100svh - 64px);
+  min-height: 540px;
+  max-height: 1000px;
+  margin: 32px;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid #d4cec0;
+  box-shadow: 0 4px 6px #292b2903, 0 22px 64px #5149340b;
+}
+.folio::before {
+  content: "";
+  z-index: -1;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .16;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23807868' opacity='.23' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
+}
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 26px 36px 0; }
+.colophon { width: 44px; height: 44px; display: grid; place-items: center; }
+.colophon svg { width: 34px; fill: none; stroke: var(--ink); stroke-width: 1.2; }
+.act-mark { display: flex; gap: 7px; align-items: center; opacity: .65; }
+.act-mark i { width: 3px; height: 3px; border-radius: 50%; background: var(--gold); }
+.act-mark i:nth-child(2) { width: 5px; height: 5px; }
+.theatre { position: relative; flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; }
+.stage-halo {
+  position: absolute;
+  width: min(46%, 490px);
+  aspect-ratio: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fbf8f040 15%, #e5decb25 65%, transparent 71%);
+  pointer-events: none;
+}
+#stage { display: block; width: 100%; height: 100%; max-width: 1100px; overflow: visible; }
+.ground { fill: none; stroke: var(--rule); stroke-width: 1; }
+.edge-mark { position: absolute; top: 50%; width: 18px; height: 1px; background: var(--rule); }
+.edge-mark-left { left: 44px; }
+.edge-mark-right { right: 44px; }
+.player { width: min(78%, 900px); margin: 0 auto; padding-bottom: 27px; }
+.timeline { display: grid; grid-template-columns: repeat(35, minmax(0, 1fr)); gap: 5px; touch-action: none; }
+.line-marker { position: relative; height: 44px; padding: 0; background: none; border: 0; cursor: pointer; }
+.line-marker::before, .line-marker::after { content: ""; position: absolute; top: 21px; left: 0; right: 0; height: 2px; border-radius: 1px; }
+.line-marker::before { background: var(--rule); transition: background .2s, transform .2s; }
+.line-marker::after { background: var(--red); transform: scaleX(0); transform-origin: left; }
+.line-marker.is-past::before { background: #7f8175; }
+.line-marker.is-current::before { background: #c7b79f; transform: scaleY(2); }
+.line-marker.is-current::after { transform: scaleX(var(--progress, 0)) scaleY(2); }
+.line-marker:hover::before, .line-marker:focus-visible::before { background: var(--gold); transform: scaleY(3); }
+.line-marker:focus-visible { outline-offset: 0; outline-width: 1px; }
+.transport { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.playback-controls { display: flex; align-items: center; gap: 22px; }
+.icon-button, .play-button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 11px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: background .2s, color .2s, transform .2s;
+}
+.icon-button svg, .play-button svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+.quiet { color: #848276; }
+.icon-button:hover:not(:disabled) { background: #ddd6c957; color: var(--ink); }
+.icon-button[aria-pressed="true"] { color: var(--red); background: #b858430b; }
+.play-button { width: 58px; height: 58px; border: 1px solid #bcb5a7; }
+.play-button:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.play-button:active { transform: scale(.94); }
+.play-button .play-icon { display: block; margin-left: 2px; }
+.play-button .pause-icon { display: none; }
+.is-playing .play-button .play-icon { display: none; }
+.is-playing .play-button .pause-icon { display: block; }
+.folio:fullscreen { width: 100%; height: 100svh; max-width: none; max-height: none; margin: 0; border: 0; }
+
+/* The animation clock is shared by every element in a scene. The controller
+   only changes scenes, supplies a seek offset, and pauses/resumes this clock. */
+.motion {
+  animation-duration: var(--duration);
+  animation-delay: var(--offset, 0ms);
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+  animation-play-state: paused;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.is-playing .motion { animation-play-state: running; }
+.scene { animation-name: scene-envelope; }
+.scene--34 { animation-name: final-envelope; }
+.ink-line, .fine-line, .faint-line, .gold-line, .red-line, .paper-line, .orbit, .wave { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.ink-line { stroke-width: 3; }
+.fine-line { stroke-width: 1.5; }
+.faint-line { stroke: #b8b3a7; stroke-width: 1.4; stroke-dasharray: 3 7; }
+.gold-line { stroke: var(--gold); stroke-width: 2; }
+.red-line { stroke: var(--red); stroke-width: 2.5; }
+.paper-line { stroke: var(--paper); stroke-width: 3; }
+.orbit { stroke: #c8bea7; stroke-width: 1; stroke-dasharray: 2 7; }
+.wave { stroke: var(--red); stroke-width: 2; }
+.gold, .gold-fill { color: var(--gold); fill: var(--gold); }
+.red, .red-fill { color: var(--red); fill: var(--red); }
+.paper { color: var(--paper); }
+.ink { color: var(--ink); }
+.mist { color: var(--mist); }
+
+/* Life and death; the mind; fortune; resistance. */
+.life-orb { animation-name: life-breath; }
+.death-orb { animation-name: death-weight; }
+.hesitate { animation-name: hesitate; transform-origin: 50% 100%; }
+.balance { animation-name: balance; }
+.endure { animation-name: endure; transform-origin: 50% 100%; }
+.noble { animation-name: noble; }
+.mind-storm { animation-name: mind-storm; stroke-dasharray: 170; }
+.rain { animation-name: rain; }
+.rain-1, .rain-3 { animation-name: rain-late; }
+.fortune-wheel { animation-name: fortune-wheel; }
+.flinch { animation-name: flinch; transform-origin: 50% 100%; }
+.arrow-left { animation-name: arrow-left; }
+.arrow-1 { animation-name: arrow-left-late; }
+.arrow-2 { animation-name: arrow-left-last; }
+.arrow-right { animation-name: arrow-right; }
+.advance { animation-name: advance; }
+.raise-sword { animation-name: raise-sword; transform-origin: 50% 100%; }
+.sea-one { animation-name: sea-one; }
+.sea-two { animation-name: sea-two; }
+.sea-three { animation-name: sea-three; }
+
+/* The deceptive peace of sleep and the trouble inside dreams. */
+.settle-sea { animation-name: settle-sea; }
+.sleep-appear, .moon-appear { animation-name: appear-late; }
+.death-to-sleep { animation-name: disappear-mid; }
+.breathe { animation-name: breathe; transform-origin: 50% 100%; }
+.pulse-quiet { animation-name: pulse-quiet; }
+.rest-line { animation-name: appear-late; }
+.heart-shock { animation-name: heart-shock; }
+.heart-crack { animation-name: heart-crack; stroke-dasharray: 140; }
+.shock { animation-name: shock; }
+.shock-1, .shock-3, .shock-5, .shock-7 { animation-name: shock-late; }
+.inherit-wound { animation-name: inherit-wound; }
+.close-circle { animation-name: draw-circle; stroke-dasharray: 425; }
+.wish { animation-name: wish; }
+.wish-stars { animation-name: appear-late; }
+.twinkle { animation-name: twinkle; }
+.twinkle-1, .twinkle-3 { animation-name: twinkle-late; }
+.dream-rise { animation-name: dream-rise; }
+.dream-snag { animation-name: dream-snag; }
+.dream-jolt { animation-name: dream-jolt; }
+.nightmare-grow { animation-name: nightmare-grow; }
+.nightmare-drift { animation-name: nightmare-drift; }
+.shed-body { animation-name: shed-body; transform-origin: 50% 100%; }
+.uncoil { animation-name: uncoil; }
+.spirit-rise { animation-name: spirit-rise; }
+.approach-stop { animation-name: approach-stop; }
+.pause-mark { animation-name: pause-mark; }
+.stopped-path { animation-name: stopped-path; stroke-dasharray: 180; }
+.weary { animation-name: weary; transform-origin: 50% 100%; }
+.long-cycle { animation-name: long-cycle; }
+
+/* The catalogue of what people bear. */
+.clock-hand { animation-name: clock-hand; transform-box: view-box; transform-origin: 0 0; }
+.whip { animation-name: whip; transform-origin: 0 0; }
+.mock-left { animation-name: mock-left; }
+.mock-right { animation-name: mock-right; }
+.oppressed { animation-name: oppressed; transform-origin: 50% 100%; }
+.oppressor-crown { animation-name: oppressor-crown; }
+.proud-turn { animation-name: proud-turn; }
+.reject-love { animation-name: reject-love; }
+.heart-fall { animation-name: heart-fall; }
+.law-delay { animation-name: law-delay; }
+.dismiss-arm { animation-name: dismiss-arm; transform-origin: 100% 50%; }
+.spurned { animation-name: spurned; }
+.spurn-lines { animation-name: spurn-lines; }
+.stolen-merit { animation-name: stolen-merit; }
+.empty-hands { animation-name: appear-late; }
+.tangled-life { animation-name: tangled-life; }
+.blade-thought { animation-name: blade-thought; }
+.quietus-ring { animation-name: quietus-ring; }
+.bodkin { animation-name: bodkin; }
+.burden-appear, .burden-rope { animation-name: burden-appear; }
+.trudge { animation-name: trudge; transform-origin: 50% 100%; }
+.sweat { animation-name: sweat; }
+.sweat-1 { animation-name: sweat-late; }
+.sweat-2 { animation-name: sweat-last; }
+.moving-ground { animation-name: moving-ground; }
+
+/* The border of death; conscience draining the will to act. */
+.dread-recoil { animation-name: dread-recoil; }
+.beyond-death { animation-name: beyond-death; }
+.fear-ray { animation-name: fear-ray; }
+.unknown-land { animation-name: unknown-land; }
+.border-mist { animation-name: border-mist; }
+.traveller { animation-name: traveller; }
+.waiting { animation-name: waiting; transform-origin: 50% 100%; }
+.footprints { animation-name: footprints; stroke-dasharray: 145; }
+.puzzle { animation-name: puzzle; }
+.return-to-pain { animation-name: return-to-pain; }
+.take-burden { animation-name: take-burden; }
+.accept-pain { animation-name: appear-late; }
+.unseen-ills { animation-name: unseen-ills; }
+.failed-flight { animation-name: failed-flight; }
+.flight-arc { animation-name: flight-arc; stroke-dasharray: 180; }
+.conscience-eye { animation-name: conscience-eye; }
+.cower { animation-name: cower; transform-origin: 50% 100%; }
+.courage-fades { animation-name: courage-fades; }
+.resolve-sun { animation-name: resolve-sun; }
+.resolve-person { animation-name: resolve-person; transform-origin: 50% 100%; }
+.resolve-sword { animation-name: resolve-sword; transform-origin: 50% 100%; }
+.resolve-rays { animation-name: resolve-rays; }
+.resolve-drain { animation-name: resolve-drain; }
+.sword-droop { animation-name: sword-droop; transform-origin: 50% 100%; }
+.thought-cloud { animation-name: thought-cloud; }
+.thought-rain { animation-name: thought-rain; }
+
+/* Endeavour turns aside, and the soliloquy becomes a prayer. */
+.voyage-course { animation-name: voyage-course; stroke-dasharray: 450; }
+.set-sail { animation-name: set-sail; }
+.gentle-sea { animation-name: gentle-sea; }
+.voyage-star { animation-name: twinkle; }
+.wrong-current { animation-name: wrong-current; stroke-dasharray: 720; }
+.ship-awry { animation-name: ship-awry; }
+.action-stops { animation-name: action-stops; }
+.turn-to-ophelia { animation-name: turn-to-ophelia; transform-origin: 50% 100%; }
+.soft-arrival { animation-name: soft-arrival; }
+.soft-rings { animation-name: soft-rings; }
+.hamlet-bows { animation-name: hamlet-bows; transform-origin: 50% 100%; }
+.ophelia-enters { animation-name: ophelia-enters; }
+.prayer-halo { animation-name: prayer-halo; stroke-dasharray: 400; }
+.prayer-flower { animation-name: prayer-flower; }
+.prayer-rises { animation-name: prayer-rises; }
+.last-bow { animation-name: last-bow; transform-origin: 50% 100%; }
+.remembrance-circle { animation-name: remembrance-circle; stroke-dasharray: 525; }
+.last-flower { animation-name: last-flower; transform-origin: 50% 100%; }
+.remember-sin { animation-name: remember-sin; }
+.final-star { animation-name: final-star; }
+
+@keyframes scene-envelope { 0%,100% { opacity: 0; } 7%,92% { opacity: 1; } }
+@keyframes final-envelope { 0% { opacity: 0; } 7%,100% { opacity: 1; } }
+@keyframes life-breath { 0%,100% { transform: scale(.88); opacity:.6; } 25%,70% { transform: scale(1.08); opacity:1; } }
+@keyframes death-weight { 0%,100% { transform: translateY(-9px); opacity:.45; } 42%,72% { transform: translateY(12px); opacity:1; } }
+@keyframes hesitate { 0%,100% { transform: rotate(0); } 28% { transform: rotate(-8deg); } 65% { transform: rotate(8deg); } }
+@keyframes balance { 0%,100% { transform: rotate(0); } 30% { transform: rotate(-6deg); } 67% { transform: rotate(6deg); } }
+@keyframes endure { 0%,100% { transform: scaleY(1); } 45%,72% { transform: scaleY(.9); } }
+@keyframes noble { 0%,100% { transform: translateY(8px); opacity:.4; } 40%,75% { transform: translateY(-4px); opacity:1; } }
+@keyframes mind-storm { 0%,12% { stroke-dashoffset:170; opacity:0; } 38%,80% { stroke-dashoffset:0; opacity:1; } 50%,62% { transform: translateX(-3px); } 56%,68% { transform: translateX(3px); } }
+@keyframes rain { 0%,12% { opacity:0; transform: translate(10px,-20px); } 22%,60% { opacity:.7; } 82%,100% { opacity:0; transform: translate(-25px,65px); } }
+@keyframes rain-late { 0%,25% { opacity:0; transform: translate(10px,-20px); } 40%,70% { opacity:.7; } 95%,100% { opacity:0; transform: translate(-25px,65px); } }
+@keyframes fortune-wheel { to { transform: rotate(260deg); } }
+@keyframes flinch { 0%,20%,44%,68%,100% { transform: rotate(0); } 30%,54%,80% { transform: rotate(9deg) scaleY(.92); } }
+@keyframes arrow-left { 0%,10% { opacity:0; transform: translateX(-80px); } 18% { opacity:1; } 31% { opacity:1; transform: translateX(140px); } 37%,100% { opacity:0; transform: translateX(150px); } }
+@keyframes arrow-left-late { 0%,32% { opacity:0; transform: translateX(-70px); } 40% { opacity:1; } 55% { opacity:1; transform: translateX(130px); } 61%,100% { opacity:0; transform: translateX(140px); } }
+@keyframes arrow-left-last { 0%,61% { opacity:0; transform: translateX(-80px); } 67% { opacity:1; } 81% { opacity:1; transform: translateX(145px); } 88%,100% { opacity:0; transform: translateX(150px); } }
+@keyframes arrow-right { 0%,41% { opacity:0; transform: translateX(50px); } 49% { opacity:1; } 67% { opacity:1; transform: translateX(-155px); } 74%,100% { opacity:0; transform: translateX(-160px); } }
+@keyframes advance { 0%,10% { transform: translateX(-35px); } 75%,100% { transform: translateX(45px); } }
+@keyframes raise-sword { 0%,15% { transform: rotate(68deg); } 48%,100% { transform: rotate(-19deg); } }
+@keyframes sea-one { 0% { transform: translate(140px,35px); opacity:0; } 20%,80% { opacity:1; } 100% { transform: translate(20px,-16px); } }
+@keyframes sea-two { from { transform: translate(150px,20px); } to { transform: translate(45px,-5px); } }
+@keyframes sea-three { from { transform: translate(130px,5px); } to { transform: translate(0,-10px); } }
+@keyframes settle-sea { 0%,10% { transform: scaleY(1); opacity:1; } 55%,100% { transform: scaleY(.01); opacity:0; } }
+@keyframes appear-late { 0%,34% { opacity:0; } 68%,100% { opacity:1; } }
+@keyframes disappear-mid { 0%,23% { opacity:1; } 57%,100% { opacity:0; } }
+@keyframes breathe { 0%,60%,100% { transform: scaleY(1); } 27% { transform: scaleY(1.045); } }
+@keyframes pulse-quiet { 0%,12% { transform: scaleY(1); opacity:1; } 68%,100% { transform: scaleY(.01); opacity:0; } }
+@keyframes heart-shock { 0%,25%,48%,70%,100% { transform: scale(1); } 18%,42%,64% { transform: scale(1.09); } 31%,54%,76% { transform: scale(.97) rotate(-3deg); } }
+@keyframes heart-crack { 0%,28% { stroke-dashoffset:140; } 68%,100% { stroke-dashoffset:0; } }
+@keyframes shock { 0%,14%,47%,80%,100% { opacity:0; transform: translateY(-15px); } 25%,59% { opacity:1; transform: translateY(8px); } }
+@keyframes shock-late { 0%,25%,59%,91%,100% { opacity:0; transform: translateY(-15px); } 38%,73% { opacity:1; transform: translateY(8px); } }
+@keyframes inherit-wound { 0%,12% { transform: translate(0,0); } 43%,56% { transform: translate(148px,-22px); } 83%,100% { transform: translate(293px,10px); } }
+@keyframes draw-circle { 0%,50% { stroke-dashoffset:425; opacity:0; } 91%,100% { stroke-dashoffset:0; opacity:1; } }
+@keyframes wish { 0%,10% { opacity:0; transform: translateY(24px); } 45%,100% { opacity:1; transform: translateY(-5px); } }
+@keyframes twinkle { 0%,100% { opacity:0; transform: scale(.3); } 35%,72% { opacity:1; transform: scale(1); } }
+@keyframes twinkle-late { 0%,24%,100% { opacity:0; transform: scale(.3); } 57%,80% { opacity:1; transform: scale(1); } }
+@keyframes dream-rise { 0%,10% { transform: translate(-32px,83px) scale(.1); opacity:0; } 43% { transform: translate(0,0) scale(1); opacity:1; } 58%,100% { transform: translate(12px,-6px) scale(.82); fill:var(--mist); } }
+@keyframes dream-snag { 0%,39% { opacity:0; transform: scale(.2) rotate(-35deg); } 58%,100% { opacity:1; transform: scale(1); } }
+@keyframes dream-jolt { 0%,51%,80%,100% { opacity:0; } 58%,68% { opacity:1; } }
+@keyframes nightmare-grow { 0%,10% { opacity:0; transform: translateY(70px) scale(.3); } 60%,100% { opacity:1; transform: translateY(0) scale(1); } }
+@keyframes nightmare-drift { 0%,30% { opacity:0; transform: translateY(28px) rotate(-20deg); } 76%,100% { opacity:1; transform: translateY(-4px) rotate(20deg); } }
+@keyframes shed-body { 0%,18% { opacity:1; } 77%,100% { opacity:.12; transform: scaleY(.83); } }
+@keyframes uncoil { 0%,15% { opacity:1; } 85%,100% { transform: translateY(46px) scale(1.35,.15); opacity:0; } }
+@keyframes spirit-rise { 0%,14% { transform: translateY(0); opacity:0; } 30% { opacity:1; } 89%,100% { transform: translateY(-137px); opacity:.75; } }
+@keyframes approach-stop { 0%,10% { transform: translateX(0); } 45%,100% { transform: translateX(130px); } }
+@keyframes pause-mark { 0%,41% { opacity:0; transform: scaleY(.1); } 53%,100% { opacity:1; transform: scaleY(1); } }
+@keyframes stopped-path { 0% { stroke-dashoffset:180; } 47%,100% { stroke-dashoffset:65; } }
+@keyframes weary { 0%,100% { transform: rotate(0); } 38%,74% { transform: rotate(6deg) translateY(3px); } }
+@keyframes long-cycle { to { transform: rotate(130deg); } }
+@keyframes clock-hand { to { transform: rotate(720deg); } }
+@keyframes whip { 0%,25%,58%,100% { transform: rotate(-9deg) scaleY(.6); } 37%,73% { transform: rotate(11deg) scaleY(1.13); } }
+@keyframes mock-left { 0%,100% { transform: translateX(-18px) rotate(-10deg); } 55% { transform: translateX(32px) rotate(12deg); } }
+@keyframes mock-right { 0%,100% { transform: translateX(18px) rotate(10deg); } 55% { transform: translateX(-32px) rotate(-12deg); } }
+@keyframes oppressed { 0%,20% { transform: scaleY(1); } 62%,100% { transform: scaleY(.66); } }
+@keyframes oppressor-crown { 0%,12% { transform: translateY(-25px); } 62%,100% { transform: translateY(77px); } }
+@keyframes proud-turn { 0%,25% { transform: skewY(0); } 58%,100% { transform: skewY(-7deg) translateX(10px); } }
+@keyframes reject-love { 0%,20% { transform: translateX(0); } 65%,100% { transform: translateX(47px); } }
+@keyframes heart-fall { 0%,25% { transform: translateY(0); opacity:1; } 70%,100% { transform: translateY(87px) rotate(-25deg); opacity:.5; } }
+@keyframes law-delay { 0%,32% { transform: rotate(0); } 47%,68% { transform: rotate(180deg); } 85%,100% { transform: rotate(360deg); } }
+@keyframes dismiss-arm { 0%,18% { transform: rotate(-50deg); } 38%,100% { transform: rotate(0); } }
+@keyframes spurned { 0%,34% { transform: translateX(0); } 61%,100% { transform: translateX(-36px) rotate(-7deg); } }
+@keyframes spurn-lines { 0%,32%,75%,100% { opacity:0; } 42%,59% { opacity:1; } }
+@keyframes stolen-merit { 0%,22% { transform: translateX(0); } 68%,100% { transform: translate(202px,-52px); } }
+@keyframes tangled-life { 0%,20%,40% { transform: rotate(-4deg); } 10%,30% { transform: rotate(4deg); } 55%,100% { transform: rotate(0); opacity:.4; } }
+@keyframes blade-thought { 0%,36% { opacity:0; transform: translateY(14px); } 70%,100% { opacity:.8; transform: translateY(0); } }
+@keyframes quietus-ring { 0%,40% { opacity:0; transform: scale(.8); } 75%,100% { opacity:1; transform: scale(1); } }
+@keyframes bodkin { 0%,15% { transform: translate(90px,-10px) rotate(18deg); } 58%,100% { transform: translate(0,0) rotate(0); opacity:.6; } }
+@keyframes burden-appear { 0%,20% { opacity:0; transform: translateY(-20px); } 64%,100% { opacity:1; transform: translateY(0); } }
+@keyframes trudge { 0% { transform: translateX(-35px); } 20% { transform: translate(-21px,4px) rotate(3deg); } 40% { transform: translate(-7px,0); } 60% { transform: translate(7px,4px) rotate(3deg); } 80% { transform: translate(21px,0); } 100% { transform: translate(35px,4px); } }
+@keyframes sweat { 0%,14% { transform: translateY(0); opacity:0; } 23% { opacity:1; } 47%,100% { transform: translateY(41px); opacity:0; } }
+@keyframes sweat-late { 0%,35% { transform: translateY(0); opacity:0; } 43% { opacity:1; } 68%,100% { transform: translateY(41px); opacity:0; } }
+@keyframes sweat-last { 0%,58% { transform: translateY(0); opacity:0; } 66% { opacity:1; } 90%,100% { transform: translateY(41px); opacity:0; } }
+@keyframes moving-ground { to { transform: translateX(-65px); } }
+@keyframes dread-recoil { 0%,22% { transform: translateX(0); } 46% { transform: translateX(14px); } 67%,100% { transform: translateX(-28px) rotate(-7deg); } }
+@keyframes beyond-death { 0%,26% { opacity:0; transform: scale(.75); } 61%,100% { opacity:.9; transform: scale(1); } }
+@keyframes fear-ray { 0%,43%,78%,100% { opacity:0; } 51%,64% { opacity:1; } }
+@keyframes unknown-land { 0% { opacity:0; transform: translateY(20px); } 42%,100% { opacity:.7; transform: translateY(-3px); } }
+@keyframes border-mist { 0%,100% { transform: translateX(-12px); opacity:.4; } 55% { transform: translateX(12px); opacity:1; } }
+@keyframes traveller { 0%,9% { transform: translateX(0); opacity:1; } 54% { transform: translateX(148px); opacity:1; } 70%,100% { transform: translateX(169px); opacity:0; } }
+@keyframes waiting { 0%,50%,100% { transform: rotate(0); } 72% { transform: rotate(8deg); } }
+@keyframes footprints { 0%,10% { opacity:0; stroke-dashoffset:145; } 60% { opacity:1; stroke-dashoffset:0; } 90%,100% { opacity:.3; } }
+@keyframes puzzle { 0%,56% { opacity:0; } 74%,100% { opacity:1; transform: rotate(35deg); } }
+@keyframes return-to-pain { 0%,14% { transform: translateX(0); } 59%,100% { transform: translateX(-105px); } }
+@keyframes take-burden { 0%,58% { transform: translateY(0); } 85%,100% { transform: translate(-8px,-63px); } }
+@keyframes unseen-ills { 0%,100% { opacity:.45; } 47% { opacity:1; transform: scale(1.1); } }
+@keyframes failed-flight { 0%,12%,100% { transform: translate(0,0); } 43% { transform: translate(60px,-38px) rotate(8deg); } 76%,95% { transform: translate(-47px,-10px); } }
+@keyframes flight-arc { 0%,15% { stroke-dashoffset:180; opacity:0; } 43% { stroke-dashoffset:55; opacity:1; } 74%,100% { stroke-dashoffset:55; opacity:0; } }
+@keyframes conscience-eye { 0%,10% { transform: scaleY(.05); } 39%,100% { transform: scaleY(1); } }
+@keyframes cower { 0%,32% { transform: scaleY(1); } 72%,100% { transform: scale(.88,.69); } }
+@keyframes courage-fades { 0%,28% { opacity:1; } 70%,100% { opacity:0; transform: translateY(33px) scale(.3); } }
+@keyframes resolve-sun { 0%,8% { transform: scale(.55); opacity:.3; } 60%,100% { transform: scale(1); opacity:.9; } }
+@keyframes resolve-person { 0%,8% { transform: scaleY(.88); } 50%,100% { transform: scaleY(1); } }
+@keyframes resolve-sword { 0%,10% { transform: rotate(55deg); } 54%,100% { transform: rotate(0); } }
+@keyframes resolve-rays { 0%,36% { opacity:0; transform: scale(.8); } 66%,100% { opacity:1; transform: scale(1); } }
+@keyframes resolve-drain { 0%,10% { fill:var(--gold); opacity:.9; } 80%,100% { fill:var(--mist); opacity:.35; } }
+@keyframes sword-droop { 0%,20% { transform: rotate(0); } 82%,100% { transform: rotate(65deg); color:#999b90; } }
+@keyframes thought-cloud { 0%,12% { opacity:0; transform: translateY(-45px) scale(.6); } 78%,100% { opacity:.92; transform: translateY(18px) scale(1.1); } }
+@keyframes thought-rain { 0%,45% { opacity:0; transform: translateY(-12px); } 74% { opacity:.8; } 100% { opacity:0; transform: translateY(24px); } }
+@keyframes voyage-course { 0% { stroke-dashoffset:450; } 80%,100% { stroke-dashoffset:0; } }
+@keyframes set-sail { 0%,9% { transform: translate(-58px,12px) rotate(-4deg); } 80%,100% { transform: translate(114px,-18px) rotate(3deg); } }
+@keyframes gentle-sea { 0% { transform: translateX(-22px) scaleY(.25); } 100% { transform: translateX(22px) scaleY(.25); } }
+@keyframes wrong-current { 0%,10% { stroke-dashoffset:720; } 78%,100% { stroke-dashoffset:0; } }
+@keyframes ship-awry { 0%,8% { transform: translate(-20px,0); } 43% { transform: translate(95px,-13px) rotate(12deg); } 70% { transform: translate(135px,-37px) rotate(-25deg); } 100% { transform: translate(77px,-30px) rotate(-43deg); } }
+@keyframes action-stops { 0% { transform: translateX(-35px); opacity:1; } 36% { transform: translateX(22px); opacity:.7; } 66%,100% { transform: translateX(22px) scaleX(.6); opacity:0; } }
+@keyframes turn-to-ophelia { 0%,43% { transform: rotate(-3deg); } 74%,100% { transform: rotate(7deg); } }
+@keyframes soft-arrival { 0%,42% { opacity:0; transform: translateX(25px); } 83%,100% { opacity:1; transform: translateX(0); } }
+@keyframes soft-rings { 0%,54% { opacity:0; transform: scale(.6); } 91%,100% { opacity:1; transform: scale(1); } }
+@keyframes hamlet-bows { 0%,25% { transform: rotate(0); } 75%,100% { transform: rotate(13deg) scaleY(.95); } }
+@keyframes ophelia-enters { 0% { transform: translateX(35px); opacity:0; } 39%,100% { transform: translateX(0); opacity:1; } }
+@keyframes prayer-halo { 0%,27% { stroke-dashoffset:400; opacity:0; } 84%,100% { stroke-dashoffset:0; opacity:.8; } }
+@keyframes prayer-flower { 0%,30% { transform: translateY(12px); opacity:0; } 74%,100% { transform: translateY(0); opacity:1; } }
+@keyframes prayer-rises { 0%,40% { transform: translateY(30px) scale(.3); opacity:0; } 84%,100% { transform: translateY(0) scale(1); opacity:1; } }
+@keyframes last-bow { 0% { transform: rotate(8deg); } 58%,100% { transform: rotate(17deg) scaleY(.91); } }
+@keyframes remembrance-circle { 0%,10% { stroke-dashoffset:525; opacity:0; } 78%,100% { stroke-dashoffset:0; opacity:.8; } }
+@keyframes last-flower { 0%,16% { transform: scale(.4); opacity:0; } 83%,100% { transform: scale(1); opacity:1; } }
+@keyframes remember-sin { 0%,15% { transform: translate(0,0); opacity:.8; } 81%,100% { transform: translate(var(--sin-x),var(--sin-y)); opacity:.75; } }
+@keyframes final-star { 0%,60% { opacity:0; transform: scale(.2); } 94%,100% { opacity:.9; transform: scale(1); } }
+
+@media (min-width: 1600px) { .folio { margin: 48px; height: calc(100svh - 96px); } }
+@media (max-width: 700px) {
+  .folio { width: calc(100% - 24px); height: calc(100svh - 24px); min-height: 460px; margin: 12px; }
+  .topbar { padding: 16px 14px 0; }
+  .theatre { margin: 0 -4px; overflow: hidden; }
+  #stage { width: 150%; max-width: none; flex-shrink: 0; }
+  .stage-halo { width: 68%; }
+  .edge-mark { display: none; }
+  .player { width: calc(100% - 40px); padding-bottom: 20px; }
+  .timeline { gap: 3px; }
+  .transport { margin-top: 10px; }
+  .playback-controls { gap: 13px; }
+}
+@media (max-height: 580px) and (min-width: 701px) {
+  .folio { min-height: 340px; height: calc(100svh - 24px); margin: 12px; }
+  .topbar { position: absolute; inset: 0 0 auto; padding-top: 10px; z-index: 2; }
+  .player { padding-bottom: 10px; }
+  .transport { margin-top: 0; }
+  .play-button { width: 44px; height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .icon-button, .play-button, .line-marker::before { transition: none; }
+}
